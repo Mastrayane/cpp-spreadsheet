@@ -6,6 +6,7 @@
 #include <functional>
 #include <unordered_set>
 
+
 class Sheet;
 
 class Cell : public CellInterface {
@@ -22,15 +23,22 @@ public:
 
     bool IsReferenced() const;
 
+    
+
 private:
     class Impl;
     class EmptyImpl;
     class TextImpl;
     class FormulaImpl;
+    bool WouldIntroduceCircularDependency(const Impl& new_impl) const;
+    void InvalidateCacheRecursive(bool force = false);
+    std::unique_ptr<Impl> CreateImpl(std::string text);
+    void UpdateDependencies();
+    
 
     std::unique_ptr<Impl> impl_;
 
-    // Добавьте поля и методы для связи с таблицей, проверки циклических 
-    // зависимостей, графа зависимостей и т. д.
-
+    Sheet& sheet_;
+    std::unordered_set<Cell*> l_nodes_;
+    std::unordered_set<Cell*> r_nodes_;
 };
