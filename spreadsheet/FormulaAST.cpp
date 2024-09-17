@@ -143,22 +143,28 @@ namespace ASTImpl {
             }
 
             double Evaluate(std::function<double(Position)> args) const override {
+                double lhs_value = lhs_->Evaluate(args);
+                double rhs_value = rhs_->Evaluate(args);
                 double result = 0.0;
+
                 switch (type_) {
                 case Add:
-                    result = lhs_->Evaluate(args) + rhs_->Evaluate(args);
+                    result = lhs_value + rhs_value;
                     break;
                 case Subtract:
-                    result = lhs_->Evaluate(args) - rhs_->Evaluate(args);
+                    result = lhs_value - rhs_value;
                     break;
                 case Multiply:
-                    result = lhs_->Evaluate(args) * rhs_->Evaluate(args);
+                    result = lhs_value * rhs_value;
                     break;
                 case Divide:
-                    result = lhs_->Evaluate(args) / rhs_->Evaluate(args);
+                    result = lhs_value / rhs_value;
                     break;
                 }
-                if (!std::isfinite(result)) throw FormulaError{ FormulaError::Category::Arithmetic };
+
+                if (!std::isfinite(result)) {
+                    throw FormulaError{ FormulaError::Category::Arithmetic };
+                }
 
                 return result;
             }
