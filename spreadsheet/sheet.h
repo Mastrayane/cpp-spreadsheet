@@ -43,6 +43,7 @@ public:
 
 private:
     void PrintCellValue(std::ostream& output, int row, int col) const;
+    void ValidatePosition(const Position& pos) const;
 
 	Table cells_;
 };

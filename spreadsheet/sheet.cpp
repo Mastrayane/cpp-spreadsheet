@@ -12,11 +12,15 @@ using namespace std::literals;
 
 Sheet::~Sheet() {}
 
-void Sheet::SetCell(Position pos, std::string text) {
+
+void Sheet::ValidatePosition(const Position& pos) const {
     if (!pos.IsValid()) {
         throw InvalidPositionException("Invalid position");
     }
+}
 
+void Sheet::SetCell(Position pos, std::string text) {
+    ValidatePosition(pos);
     const auto& cell = cells_.find(pos);
 
     if (cell == cells_.end()) {
@@ -24,6 +28,7 @@ void Sheet::SetCell(Position pos, std::string text) {
     }
     cells_.at(pos)->Set(std::move(text));
 }
+
 
 const CellInterface* Sheet::GetCell(Position pos) const {
     return GetCellPtr(pos);
@@ -34,9 +39,7 @@ CellInterface* Sheet::GetCell(Position pos) {
 }
 
 void Sheet::ClearCell(Position pos) {
-    if (!pos.IsValid()) {
-        throw InvalidPositionException("Invalid position");
-    }
+    ValidatePosition(pos);
 
     const auto& cell = cells_.find(pos);
     if (cell != cells_.end() && cell->second != nullptr) {
@@ -86,7 +89,7 @@ void Sheet::PrintTexts(std::ostream& output) const {
 }
 
 const Cell* Sheet::GetCellPtr(Position pos) const {
-    if (!pos.IsValid()) throw InvalidPositionException("Invalid position");
+    ValidatePosition(pos);
 
     const auto cell = cells_.find(pos);
     if (cell == cells_.end()) {
