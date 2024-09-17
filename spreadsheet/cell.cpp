@@ -52,8 +52,11 @@ class Cell::FormulaImpl : public Impl {
 public:
     explicit FormulaImpl(std::string expression, const SheetInterface& sheet)
         : sheet_(sheet) {
-        if (expression.empty() || expression[0] != FORMULA_SIGN) {
-            throw std::logic_error("");
+        if (expression.empty()) {
+            throw std::invalid_argument("Expression is empty");
+        }
+        if (expression[0] != FORMULA_SIGN) {
+            throw std::invalid_argument("Expression does not start with the formula sign");
         }
         formula_ptr_ = ParseFormula(expression.substr(1));
     }
